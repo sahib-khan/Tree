@@ -75,9 +75,9 @@ pair<DataNode*,int> DataNode::split(int value){
 
     this->keys.insert(this->keys.begin()+index,value);
 
-    secondChild->keys.assign(keys.begin()+t,keys.end());    
+    secondChild->keys.assign(keys.begin()+t+1,keys.end());    
 
-    this->keys.resize(t);
+    this->keys.resize(t+1);
 
     secondChild->left= this;
     secondChild->right = this->right;
@@ -136,10 +136,13 @@ pair<IndexNode*,int> IndexNode::split(int value){
 
     secondChild->keys.assign(keys.begin()+t+1,keys.end());
     secondChild->children.assign(children.begin()+t+1,children.end());        
-
-    this->children.resize(t+1);
+    
+    int val= keys[t];
+    
+    this->children.resize(t+1); 
     this->keys.resize(t);
-    return {secondChild,keys[t]};
+
+    return {secondChild,val};
 
 
     /*
@@ -237,26 +240,29 @@ public:
         pair<void *,int> elem;
         q.push({root,1});
         int level=1;
+        int count=0;
         while(!q.empty()){
             elem=q.front();
             q.pop();
+            count++;
             if(level!=elem.second){
                 level = elem.second;
-                cout<<endl;
             }
-            if(level==depth){
+            cout<<count<<"::"<<level-1<<"::";
+            if(level==depth){                
                 for(auto i :toDataNodeType(elem.first)->keys)
-                    cout<<"("<<i<<","<<level<<") ";
-                cout<<"\t";
+                    cout<<i<<" ";
+                
             }
             else{
                 for(auto itr :toIndexNodeType(elem.first)->children)
                     if(itr!=NULL)
                         q.push({itr,elem.second+1});
                 for(auto i:toIndexNodeType(elem.first)->keys)
-                    cout<<"("<<i<<","<<level<<") ";
-                cout<<"\t";
-            }            
+                    cout<<i<<" ";
+                
+            }   
+            cout<<endl;         
         }
         cout<<endl;
     }
@@ -267,7 +273,7 @@ int main(){
     int d;
     int c;
     while(true){
-        cout<<"1.Create new tree \n2.Insert \n3.Print\n4.Search"<<endl;
+        cout<<"1.Create new tree \n2.Insert \n3.Search\n4.Print"<<endl;
         cin>>c;
         switch(c){
             case 1: cout<<"Enter Index Node size, Data Node Size: "; 
@@ -279,9 +285,13 @@ int main(){
             break;
             case 2: cout<<"Enter value to be inserted "; int k; cin>>k; tree->insertInTree(k);
             break;
-            case 3:  tree->printLevelOrder();
+            case 4:  tree->printLevelOrder();
             break;
-            case 4:
+            case 3:
+                    cout<<"Enter Elelment to be searched "<<k;
+                    if(tree->search(k)!=NULL)   cout<<"Found\n";
+                    else
+                        cout<<"Not Found\n";
             break;
             default:
                     exit(0);

@@ -45,9 +45,11 @@ public:
         secondChild->keys.assign(keys.begin()+t+1,keys.end());
         secondChild->children.assign(children.begin()+t+1,children.end());        
 
-        this->children.resize(t+1);
+        this->children.resize(t+1); 
+        int val= keys[t];
         this->keys.resize(t);
-        return {secondChild,keys[t]};
+
+        return {secondChild,val};
 
 
         /*
@@ -145,14 +147,20 @@ int main(){
     int t;
     int c;
     while(true){
-        cout<<"1. create new tree 2.insert 3.Print"<<endl;
+        cout<<"1.Create new tree 2.insert 3.Search 4.Print"<<endl;
         cin>>c;
         switch(c){
             case 1: cout<<"Enter t "; cin>>t; tree->createTree(t);
             break;
             case 2: cout<<"Enter value"; int k; cin>>k; tree->insertInTree(k);
             break;
-            case 3:  tree->printLevelOrder();
+            case 3:
+                    cout<<"Enter Elelment to be searched "<<k;
+                    if(tree->search(k)!=NULL)   cout<<"Found\n";
+                    else
+                        cout<<"Not Found\n";
+            break;
+            case 4:  tree->printLevelOrder();
             break;
             default:
                     exit(0);
